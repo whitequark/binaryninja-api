@@ -25,6 +25,8 @@ class BINARYNINJAUIAPI CustomFusionStyle : public QProxyStyle
 	    QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const override;
 	virtual void drawPrimitive(
 	    PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+	virtual int styleHint(QStyle::StyleHint hint, const QStyleOption *option = nullptr, const QWidget *widget = nullptr,
+		QStyleHintReturn *returnData = nullptr) const override;
 };
 
 void BINARYNINJAUIAPI pixmapForBWMaskIcon(const QString& url, QPixmap* pixmapOut, BNThemeColor color = SidebarActiveIconColor, const QString& cacheSuffix = "");
