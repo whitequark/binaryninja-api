@@ -2304,7 +2304,7 @@ extern "C"
 		uint32_t major;
 		uint32_t minor;
 		uint32_t build;
-		const char* channel;
+		char* channel;
 	} BNVersionInfo;
 	typedef struct BNChangelogEntry {
 		BNVersionInfo version;
