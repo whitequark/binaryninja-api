@@ -5,12 +5,20 @@
 #include <vector>
 #include "binaryninjaapi.h"
 #include "uicontext.h"
+#include <QPushButton>
 
 /*!
     @addtogroup Theme
     \ingroup uiapi
     @{
 */
+
+class BINARYNINJAUIAPI CustomStyleFlatButton : public QPushButton
+{
+	Q_OBJECT
+public:
+	CustomStyleFlatButton(QWidget* parent = nullptr) : QPushButton(parent) {}
+};
 
 class BINARYNINJAUIAPI CustomFusionStyle : public QProxyStyle
 {
