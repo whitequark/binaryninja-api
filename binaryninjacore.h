@@ -2300,23 +2300,26 @@ extern "C"
 		char* description;
 		char* latestVersion;
 	} BNUpdateChannel;
+
 	typedef struct BNVersionInfo {
 		uint32_t major;
 		uint32_t minor;
 		uint32_t build;
 		char* channel;
 	} BNVersionInfo;
+
 	typedef struct BNChangelogEntry {
 		BNVersionInfo version;
 		char* notes;
-		char* author;
 		uint64_t time;
 	} BNChangelogEntry;
+
 	typedef struct BNUpdateVersionNew {
 		BNVersionInfo version;
 		char* name;
 		uint64_t time;
 	} BNUpdateVersionNew;
+
 	typedef struct BNUpdateChannelFullInfo {
 		BNUpdateVersionNew* versions;
 		uint64_t versionCount;
