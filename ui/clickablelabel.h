@@ -20,10 +20,12 @@
 struct BINARYNINJAUIAPI IconImage
 {
 	QImage original;
+	QString svgURL;
 	QImage active, activeHover;
 	QImage inactive, inactiveHover;
 
 	static IconImage generate(const QImage& src);
+	static IconImage generate(const QString& svgURL, const QSize& size);
 };
 
 
@@ -73,12 +75,14 @@ class BINARYNINJAUIAPI ClickableIcon : public QWidget
 
   public:
 	ClickableIcon(const QImage& icon, const QSize& desiredPointSize);
+	ClickableIcon(const QString& svgURL, const QSize& desiredPointSize);
 
 	void setAllowToggle(bool canToggle);
 	void setActive(bool state);
 	bool active() const { return m_active; }
 
 	void setImage(const QImage& icon);
+	void setImage(const QString& svgSrc);
 
   Q_SIGNALS:
 	void clicked();
