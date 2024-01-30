@@ -26,11 +26,13 @@ class DockableTabStyle;
 */
 struct BINARYNINJAUIAPI SidebarIcon
 {
+	QString svgURL;
 	QImage original;
 	QImage active;
 	QImage inactive;
 
 	static SidebarIcon generate(const QImage& src);
+	static SidebarIcon generate(const QString& svgURL);
 };
 
 /*!
@@ -189,6 +191,7 @@ class BINARYNINJAUIAPI SidebarWidgetType
 
 public:
 	SidebarWidgetType(const QImage& icon, const QString& name);
+	SidebarWidgetType(const QString& svgIconURL, const QString& name);
 	virtual ~SidebarWidgetType() {}
 
 	const SidebarIcon& icon() const { return m_icon; }
