@@ -27,7 +27,10 @@ class BINARYNINJAUIAPI CustomFusionStyle : public QProxyStyle
 	    PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
 };
 
-void BINARYNINJAUIAPI pixmapForBWMaskIcon(const QString& url, QPixmap* pixmapOut, BNThemeColor color = SidebarActiveIconColor, const QString& cacheSuffix = "");
+void BINARYNINJAUIAPI pixmapForSVGIcon(const QString& url, const QSize size, QPixmap* pixmapOut, BNThemeColor color);
+void BINARYNINJAUIAPI pixmapForSVGIcon(const QString& url, const QSize size, QPixmap* pixmapOut, QColor color);
+QImage BINARYNINJAUIAPI imageForSVGIcon(const QString& url, const QSize size, BNThemeColor color);
+QImage BINARYNINJAUIAPI imageForSVGIcon(const QString& url, const QSize size, QColor color);
 
 void BINARYNINJAUIAPI initThemes();
 void BINARYNINJAUIAPI resetUserThemes();
