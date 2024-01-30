@@ -151,3 +151,55 @@ class BINARYNINJAUIAPI ClickableStateLabel : public ClickableLabel
 		}
 	}
 };
+
+
+/*!
+
+\ingroup clickablelabel
+        */
+class BINARYNINJAUIAPI ClickableStateIcon : public ClickableIcon
+{
+	Q_OBJECT
+
+	QString m_svgURL;
+	QString m_altSVGURL;
+	bool m_state = true;
+	bool m_stateEffectEnabled = false;
+	bool m_altStateEffect = false;
+	QPalette::ColorRole m_altOverlayColorRole;
+	int m_alpha;
+
+public:
+	ClickableStateIcon(const QSize& desiredPointSize, const QString& svgURL, const QString& altSVGUrl) :
+		ClickableIcon(svgURL, desiredPointSize), m_svgURL(svgURL), m_altSVGURL(altSVGUrl)
+	{}
+
+	bool getState() { return m_state; }
+
+	void setDisplayState(bool state)
+	{
+		m_state = state;
+		setImage(m_state ? m_svgURL : m_altSVGURL);
+	}
+
+	void setAlternateTransparency(QPalette::ColorRole colorRole, int alpha, bool state)
+	{
+		m_altOverlayColorRole = colorRole;
+		m_alpha = alpha;
+		m_altStateEffect = state;
+		m_stateEffectEnabled = true;
+	}
+
+protected:
+	void paintEvent(QPaintEvent* event) override
+	{
+		ClickableIcon::paintEvent(event);
+		if (m_stateEffectEnabled && (m_state == m_altStateEffect))
+		{
+			QPainter p(this);
+			QColor overlayColor = palette().color(m_altOverlayColorRole);
+			overlayColor.setAlpha(m_alpha);
+			p.fillRect(event->rect(), overlayColor);
+		}
+	}
+};
