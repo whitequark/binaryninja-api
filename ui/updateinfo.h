@@ -25,6 +25,8 @@ public:
 		QString author;
 		QString commit;
 		QString body;
+		ChangelogEntryItem(const QString& author = "", const QString& commit = "", const QString& body = "")
+			: author(author), commit(commit), body(body) {};
 		/// In-struct cache for wrapped text
 		mutable QString bodyWrapCache;
 	};
