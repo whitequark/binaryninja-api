@@ -20,7 +20,7 @@
 
 import ctypes
 import struct
-from typing import Optional, Generator, List, Union, NewType, Tuple, ClassVar, Mapping, Set, Callable, Any
+from typing import Optional, Generator, List, Union, NewType, Tuple, ClassVar, Mapping, Set, Callable, Any, Iterator
 from dataclasses import dataclass
 from enum import Enum
 
@@ -133,6 +133,10 @@ class CoreHighLevelILInstruction:
 		    HighLevelILOperation(instr.operation), instr.attributes, instr.sourceOperand, instr.size, operands, instr.address,
 		    instr.parent
 		)
+
+
+class HaltIteration():
+	pass
 
 
 @dataclass(frozen=True)
@@ -903,6 +907,16 @@ class HighLevelILInstruction(BaseILInstruction):
 					if (result := i.traverse(cb, *args, **kwargs)) is not None:
 						return result
 		return None
+
+	def traverse_iterate(self, cb: Callable[['HighLevelILInstruction', Any], Any], *args: Any, **kwargs: Any) -> Iterator[Any]:
+		if (result := cb(self, *args, **kwargs)) is not None:
+			yield result
+		for _, op, _ in self.detailed_operands:
+			if isinstance(op, HighLevelILInstruction):
+				yield from op.traverse_iterate(cb, *args, **kwargs)
+			elif isinstance(op, list) and all(isinstance(i, HighLevelILInstruction) for i in op):
+				for i in op:
+					yield from i.traverse_iterate(cb, *args, **kwargs) # type: ignore
 
 
 @dataclass(frozen=True, repr=False, eq=False)
@@ -3020,6 +3034,88 @@ class HighLevelILFunction:
 			(expr_type, _) = self.view.parse_type_string(expr_type)
 		tc = expr_type._to_core_struct()
 		core.BNSetHighLevelILExprType(self.handle, expr_index, tc)
+
+	def traverse(self, cb: Callable[['HighLevelILInstruction', Any], Any], *args: Any, **kwargs: Any) -> Iterator[Any]:
+		"""
+		``traverse`` iterates through all the instructions in the HLIL and calls the callback function for each instruction.
+
+		:param Callable[[HighLevelILInstruction, Any], Any] cb: Callback function that takes the instruction and any additional arguments
+		:param args: Additional arguments to pass to the callback function
+		:param kwargs: Additional keyword arguments to pass to the callback function
+
+		.. note:: The callback function should return the value to yield, or None to continue iterating. If the callback function returns HaltIteration(), the iteration will stop.
+			If you wish to return a value and stop iteration, you should return a tuple of the value and HaltIteration().
+
+		:Example:
+			def get_memcpy_data(i, t) -> bytes:
+				match i:
+					case HighLevelILCall(dest=HighLevelILConstPtr(constant=c)) if c == t:
+						return bytes(i.params[1].constant_data.data)
+
+			# Iterate through all instructions in the HLIL
+			list(current_hlil.traverse(get_memcpy_data, bv.get_symbol_by_raw_name('__builtin_memcpy').address))
+
+
+			# find all the calls to __builtin_strcpy and get their values
+			def find_strcpy_data(i, t) -> str:
+				match i:
+					case HighLevelILCall(dest=HighLevelILConstPtr(constant=c)) if c in t:
+						return str(i.params[1].constant_data.data)
+
+			list(current_hlil.traverse(find_strcpy_data, bv.get_symbol_by_raw_name('__builtin_strcpy').address))
+
+			# collect the number of parameters for each function call
+			def param_counter(i) -> int:
+				match i:
+					case HighLevelILCall():
+						return len(i.params)
+			list(current_hlil.traverse(param_counter))
+
+			# collect the target of each call instruction if its constant
+			def collect_call_target(i) -> None:
+				match i:
+					case HighLevelILCall(dest=HighLevelILConstPtr(constant=c)):
+						return c
+			set([hex(a) for a in current_hlil.traverse(print_call_target)])
+
+
+			# collect all the Variables named 'this'
+			def collect_this_vars(i) -> Variable:
+				match i:
+					case HighLevelILVar(var=v) if v.name == 'this':
+						return v
+			list(v for v in current_hlil.traverse(collect_this_vars))
+
+			# collect find the first variable with the name 'n'
+			def find_first_var_named(i, n) -> Variable:
+				match i:
+					case HighLevelILVar(var=v) if v.name == n:
+						return v, HaltIteration()
+			data = list(current_hlil.traverse(find_first_var_named, 'var_60'))
+			assert len(data) == 1
+			print(data[0])
+
+			# collect find the first variable with the name 'n'
+			def find_all_vars_named(i, n) -> Variable:
+				match i:
+					case HighLevelILVar(var=v) if v.name == n:
+						return v
+			data = list(current_hlil.traverse(find_all_vars_named, 'var_60'))
+		"""
+		root = self.root
+		if root is None:
+			raise ValueError("HighLevelILFunction has no root")
+
+		for instr in root:
+			for result in instr.traverse_iterate(cb, *args, **kwargs):
+				if isinstance(result, (Tuple, List)) and len(result) == 2 and isinstance(result[1], HaltIteration):
+					yield result[0]
+					return
+				if isinstance(result, HaltIteration):
+					return
+				if result is None:
+					continue
+				yield result
 
 
 class HighLevelILBasicBlock(basicblock.BasicBlock):
