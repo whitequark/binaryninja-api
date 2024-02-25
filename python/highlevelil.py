@@ -135,8 +135,10 @@ class CoreHighLevelILInstruction:
 		)
 
 
+@dataclass(frozen=True)
 class HaltIteration():
-	pass
+	value = None
+
 
 
 @dataclass(frozen=True)
@@ -3090,7 +3092,7 @@ class HighLevelILFunction:
 			def find_first_var_named(i, n) -> Variable:
 				match i:
 					case HighLevelILVar(var=v) if v.name == n:
-						return v, HaltIteration()
+						return HaltIteration(v)
 			data = list(current_hlil.traverse(find_first_var_named, 'var_60'))
 			assert len(data) == 1
 			print(data[0])
@@ -3105,17 +3107,13 @@ class HighLevelILFunction:
 		root = self.root
 		if root is None:
 			raise ValueError("HighLevelILFunction has no root")
-
+		assert isinstance(root, HighLevelILBlock)
 		for instr in root:
 			for result in instr.traverse_iterate(cb, *args, **kwargs):
-				if isinstance(result, (Tuple, List)) and len(result) == 2 and isinstance(result[1], HaltIteration):
-					yield result[0]
-					return
 				if isinstance(result, HaltIteration):
-					return
-				if result is None:
-					continue
-				yield result
+					return result.value
+				elif result is not None:
+					yield result
 
 
 class HighLevelILBasicBlock(basicblock.BasicBlock):
