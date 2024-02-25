@@ -3107,9 +3107,15 @@ class HighLevelILFunction:
 		root = self.root
 		if root is None:
 			raise ValueError("HighLevelILFunction has no root")
-		assert isinstance(root, HighLevelILBlock)
-		for instr in root:
-			for result in instr.traverse_iterate(cb, *args, **kwargs):
+		if isinstance(root, HighLevelILBlock):
+			for instr in root:
+				for result in instr.traverse_iterate(cb, *args, **kwargs):
+					if isinstance(result, HaltIteration):
+						return result.value
+					elif result is not None:
+						yield result
+		else:
+			for result in root.traverse_iterate(cb, *args, **kwargs):
 				if isinstance(result, HaltIteration):
 					return result.value
 				elif result is not None:
