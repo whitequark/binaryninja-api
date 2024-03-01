@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QVersionNumber>
 #include <QDateTime>
+#include <QDialog>
 #include "binaryninjaapi.h"
 
 class BINARYNINJAUIAPI UpdateInfoFetcher : public QObject
@@ -57,14 +58,31 @@ public:
 private:
 	std::vector<Channel> m_channels;
 	std::mutex m_infoMutex;
-	std::atomic<bool> m_done = false;
+	std::atomic<bool> m_fetchStarted;
+	FetchError m_fetchError;
+	std::atomic<bool> m_done;
+
+	UpdateInfoFetcher() {};
+	void _startFetch();
 
 public:
-	UpdateInfoFetcher() {};
-	bool done() { return m_done; }
-	void startFetch();
-	const std::vector<Channel>& getChannels();
-	const Channel* getActiveChannel();
+	static UpdateInfoFetcher* Instance();
+	static bool done() { return Instance()->m_done; }
+	static FetchError fetchError() { return Instance()->m_fetchError; }
+	static bool fetchStarted() { return Instance()->m_fetchStarted; }
+	static void startFetch() { Instance()->_startFetch(); }
+	static const std::vector<Channel>& getChannels();
+	static const Channel* getActiveChannel();
 signals:
 	void fetchCompleted(const FetchError& error);
+};
+
+class BINARYNINJAUIAPI UpdateInfoCommitFinder : public QDialog
+{
+	Q_OBJECT
+
+public:
+	UpdateInfoCommitFinder(QWidget* parent);
+protected:
+	void resizeEvent(QResizeEvent* event) override;
 };
