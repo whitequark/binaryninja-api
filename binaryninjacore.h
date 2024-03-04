@@ -380,7 +380,8 @@ extern "C"
 		ImportToken = 67,
 		AddressDisplayToken = 68,
 		IndirectImportToken = 69,
-		ExternalSymbolToken = 70
+		ExternalSymbolToken = 70,
+		StackVariableToken = 71
 	} BNInstructionTextTokenType;
 
 	typedef enum BNInstructionTextTokenContext
@@ -1867,10 +1868,12 @@ extern "C"
 		AltUnconditionalBranchColor,
 
 		// Disassembly colors
+		InstructionColor,
 		RegisterColor,
 		NumberColor,
 		CodeSymbolColor,
 		DataSymbolColor,
+		LocalVariableColor,
 		StackVariableColor,
 		ImportColor,
 		ExportColor,
