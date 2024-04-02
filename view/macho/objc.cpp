@@ -646,8 +646,8 @@ void ObjCProcessor::ReadMethodList(BinaryReader* reader, ClassBase& cls, std::st
 			if (relativeOffsets)
 			{
 				meth.name = cursor + static_cast<int32_t>(reader->Read32());
-				meth.types = cursor + static_cast<int32_t>(reader->Read32());
-				meth.imp = cursor + static_cast<int32_t>(reader->Read32());
+				meth.types = cursor + 4 + static_cast<int32_t>(reader->Read32());
+				meth.imp = cursor + 8 + static_cast<int32_t>(reader->Read32());
 			}
 			else
 			{
@@ -811,15 +811,11 @@ void ObjCProcessor::GenerateClassTypes()
 		if (failedToDecodeType)
 			continue;
 		auto classTypeStruct = classTypeBuilder.Finalize();
-		QualifiedName classTypeName = "_" + cls.name;
+		QualifiedName classTypeName = cls.name;
 		std::string classTypeId = Type::GenerateAutoTypeId("objc", classTypeName);
 		Ref<Type> classType = Type::StructureType(classTypeStruct);
 		QualifiedName classQualName = m_data->DefineType(classTypeId, classTypeName, classType);
-		auto nt =
-			TypeBuilder::NamedType(new NamedTypeReferenceBuilder(StructNamedTypeClass, classTypeId, classTypeName),
-				m_data->GetAddressSize(), 1)
-				.Finalize();
-		cls.associatedName = defineTypedef(m_data, {cls.name}, nt);
+		cls.associatedName = classTypeName;
 	}
 }
 
