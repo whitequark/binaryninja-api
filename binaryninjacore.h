@@ -6466,7 +6466,6 @@ extern "C"
 	BINARYNINJACOREAPI void BNFreeDemangledName(char*** name, size_t nameElements);
 
 	// Plugin repository APIs
-	BINARYNINJACOREAPI char** BNPluginGetApis(BNRepoPlugin* p, size_t* count);
 	BINARYNINJACOREAPI const char* BNPluginGetAuthor(BNRepoPlugin* p);
 	BINARYNINJACOREAPI const char* BNPluginGetDescription(BNRepoPlugin* p);
 	BINARYNINJACOREAPI const char* BNPluginGetLicense(BNRepoPlugin* p);
@@ -6495,7 +6494,6 @@ extern "C"
 	BINARYNINJACOREAPI bool BNPluginInstallDependencies(BNRepoPlugin* p);
 	BINARYNINJACOREAPI bool BNPluginUninstall(BNRepoPlugin* p);
 	BINARYNINJACOREAPI bool BNPluginUpdate(BNRepoPlugin* p);
-	BINARYNINJACOREAPI char* BNPluginGetInstallInstructions(BNRepoPlugin* p, const char* platform);
 	BINARYNINJACOREAPI char** BNPluginGetPlatforms(BNRepoPlugin* p, size_t* count);
 	BINARYNINJACOREAPI void BNFreePluginPlatforms(char** platforms, size_t count);
 	BINARYNINJACOREAPI const char* BNPluginGetRepository(BNRepoPlugin* p);

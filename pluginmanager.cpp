@@ -47,19 +47,6 @@ PluginStatus RepoPlugin::GetPluginStatus() const
 	return BNPluginGetPluginStatus(m_object);
 }
 
-vector<string> RepoPlugin::GetApis() const
-{
-	vector<string> result;
-	size_t count = 0;
-	char** apis = BNPluginGetApis(m_object, &count);
-	result.reserve(count);
-	for (size_t i = 0; i < count; i++)
-		result.push_back(apis[i]);
-
-	BNFreeStringList(apis, count);
-	return result;
-}
-
 string RepoPlugin::GetAuthor() const
 {
 	RETURN_STRING(BNPluginGetAuthor(m_object));
@@ -154,12 +141,6 @@ vector<string> RepoPlugin::GetInstallPlatforms() const
 		result.push_back(platforms[i]);
 	BNFreeStringList(platforms, count);
 	return result;
-}
-
-
-std::string RepoPlugin::GetInstallInstructions(const std::string& platform) const
-{
-	RETURN_STRING(BNPluginGetInstallInstructions(m_object, platform.c_str()));
 }
 
 

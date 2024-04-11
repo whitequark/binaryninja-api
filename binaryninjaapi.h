@@ -15511,7 +15511,6 @@ namespace BinaryNinja {
 	  public:
 		RepoPlugin(BNRepoPlugin* plugin);
 		PluginStatus GetPluginStatus() const;
-		std::vector<std::string> GetApis() const;
 		std::vector<std::string> GetInstallPlatforms() const;
 		std::string GetPath() const;
 		std::string GetSubdir() const;
@@ -15531,7 +15530,6 @@ namespace BinaryNinja {
 		std::string GetCommit() const;
 		std::string GetRepository() const;
 		std::string GetProjectData();
-		std::string GetInstallInstructions(const std::string& platform) const;
 		uint64_t GetMinimumVersion() const;
 		uint64_t GetLastUpdate();
 		bool IsBeingDeleted() const;

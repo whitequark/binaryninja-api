@@ -112,20 +112,6 @@ class RepoPlugin:
 		return core.BNPluginEnable(self.handle, force)
 
 	@property
-	def api(self) -> List[str]:
-		"""String indicating the API used by the plugin"""
-		result: List[str] = []
-		count = ctypes.c_ulonglong(0)
-		platforms = core.BNPluginGetApis(self.handle, count)
-		assert platforms is not None, "core.BNPluginGetApis returned None"
-		try:
-			for i in range(count.value):
-				result.append(platforms[i].decode("utf-8"))
-			return result
-		finally:
-			core.BNFreePluginPlatforms(platforms, count.value)
-
-	@property
 	def description(self) -> Optional[str]:
 		"""String short description of the plugin"""
 		return core.BNPluginGetDescription(self.handle)
@@ -195,16 +181,6 @@ class RepoPlugin:
 	def version(self) -> Optional[str]:
 		"""String version of the plugin"""
 		return core.BNPluginGetVersion(self.handle)
-
-	def install_instructions(self, platform: str) -> Optional[str]:
-		"""
-		Installation instructions for the given platform
-
-		:param str platform: One of the valid platforms "Windows", "Linux", "Darwin"
-		:return: String of the installation instructions for the provided platform
-		:rtype: str
-		"""
-		return core.BNPluginGetInstallInstructions(self.handle, platform)
 
 	@property
 	def install_platforms(self) -> List[str]:
