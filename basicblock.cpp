@@ -102,6 +102,18 @@ void DisassemblySettings::SetAddressMode(BNDisassemblyAddressMode mode)
 }
 
 
+BNDisassemblyCallParameterHints DisassemblySettings::GetCallParameterHints() const
+{
+	return BNGetDisassemblyCallParameterHints(m_object);
+}
+
+
+void DisassemblySettings::SetCallParameterHints(BNDisassemblyCallParameterHints hints)
+{
+	BNSetDisassemblyCallParameterHints(m_object, hints);
+}
+
+
 DisassemblyTextLine::DisassemblyTextLine()
 {
 	addr = 0;

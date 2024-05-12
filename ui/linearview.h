@@ -479,6 +479,7 @@ public:
 
 	void toggleOption(BNDisassemblyOption option);
 	void setAddressMode(BNDisassemblyAddressMode mode);
+	void setCallParamHints(BNDisassemblyCallParameterHints hints);
 	void setDisplayedFileName();
 
 	virtual bool goToReference(FunctionRef func, uint64_t source, uint64_t target) override;
