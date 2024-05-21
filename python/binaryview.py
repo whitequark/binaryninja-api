@@ -3031,6 +3031,21 @@ class BinaryView:
 		return _function.Function(self, func)
 
 	@property
+	def entry_functions(self) -> FunctionList:
+		"""A List of entry functions (read-only)"""
+		count = ctypes.c_ulonglong(0)
+		funcs = core.BNGetAllEntryFunctions(self.handle, count)
+
+		assert funcs is not None, "core.BNGetAllEntryFunctions returned None"
+		result = []
+		try:
+			for i in range(0, count.value):
+				result.append(_function.Function(self, core.BNNewFunctionReference(funcs[i])))
+			return result
+		finally:
+			core.BNFreeFunctionList(funcs, count.value)
+
+	@property
 	def symbols(self) -> SymbolMapping:
 		"""
 		Dict of symbols (read-only)

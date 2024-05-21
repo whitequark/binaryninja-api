@@ -5082,6 +5082,11 @@ namespace BinaryNinja {
 		*/
 		Ref<Function> GetAnalysisEntryPoint();
 
+		/*! Get all entry functions (including user-defined ones)
+
+		    \return vector of Functions
+		*/
+		std::vector<Ref<Function>> GetAllEntryFunctions();
 
 		/*! Get most recently used Basic Block containing a virtual address
 

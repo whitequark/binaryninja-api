@@ -2208,6 +2208,21 @@ Ref<Function> BinaryView::GetAnalysisEntryPoint()
 }
 
 
+vector<Ref<Function>> BinaryView::GetAllEntryFunctions()
+{
+	size_t count;
+	BNFunction** funcs = BNGetAllEntryFunctions(m_object, &count);
+	if (count == 0)
+		return {};
+
+	vector<Ref<Function>> result;
+	for (size_t i = 0; i < count; i++)
+		result.push_back(new Function(BNNewFunctionReference(funcs[i])));
+	BNFreeFunctionList(funcs, count);
+	return result;
+}
+
+
 Ref<BasicBlock> BinaryView::GetRecentBasicBlockForAddress(uint64_t addr)
 {
 	BNBasicBlock* block = BNGetRecentBasicBlockForAddress(m_object, addr);
