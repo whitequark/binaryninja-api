@@ -4939,6 +4939,12 @@ namespace BinaryNinja {
 		*/
 		void AddEntryPointForAnalysis(Platform* platform, uint64_t start);
 
+		/*! adds an function to all entry function list
+
+			\param func Function to add
+		*/
+		void AddToEntryFunctions(Function* func);
+
 		/*! removes a function from the list of functions
 
 		    \param func Function to be removed

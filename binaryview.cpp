@@ -1985,6 +1985,12 @@ void BinaryView::AddEntryPointForAnalysis(Platform* platform, uint64_t addr)
 }
 
 
+void BinaryView::AddToEntryFunctions(Function* func)
+{
+	BNAddToEntryFunctions(m_object, func->GetObject());
+}
+
+
 void BinaryView::RemoveAnalysisFunction(Function* func, bool updateRefs)
 {
 	BNRemoveAnalysisFunction(m_object, func->GetObject(), updateRefs);
