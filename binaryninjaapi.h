@@ -3143,6 +3143,8 @@ namespace BinaryNinja {
 		static void UndoEntryTakenCallback(void* ctxt, BNBinaryView* data, BNUndoEntry* entry);
 		static void RedoEntryTakenCallback(void* ctxt, BNBinaryView* data, BNUndoEntry* entry);
 
+		static void RebasedCallback(void* ctxt, BNBinaryView* oldView, BNBinaryView* newView);
+
 	  public:
 
 		enum NotificationType : uint64_t
@@ -3199,6 +3201,7 @@ namespace BinaryNinja {
 			UndoEntryAdded = 1ULL << 49,
 			UndoEntryTaken = 1ULL << 50,
 			RedoEntryTaken = 1ULL << 51,
+			Rebased = 1ULL << 52,
 
 			BinaryDataUpdates = DataWritten | DataInserted | DataRemoved,
 			FunctionLifetime = FunctionAdded | FunctionRemoved,
@@ -3627,6 +3630,17 @@ namespace BinaryNinja {
 		{
 			(void)data;
 			(void)entry;
+		}
+
+		/*! This notification is posted whenever a binary view is rebased
+
+		    \param oldView BinaryView the old view
+		    \param newView BinaryView the new view
+		 */
+		virtual void OnRebased(BinaryView* oldView, BinaryView* newView)
+		{
+			(void)oldView;
+			(void)newView;
 		}
 	};
 
